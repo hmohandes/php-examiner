@@ -45,9 +45,9 @@ class DatabaseSeeder extends Seeder
         });
 
 
-        $users = User::take(10)->get();
+        $users = User::take(100)->get();
 
-        $exams = Exam::take(5)->get();
+        $exams = Exam::take(25)->get();
 
         $studentAbilities = [];
 
