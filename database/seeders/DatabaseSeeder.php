@@ -18,14 +18,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        User::factory(100)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
 
-        Exam::factory(5)->create()->each(function (Exam $exam) {
+        Exam::factory(25)->create()->each(function (Exam $exam) {
 
             Question::factory($exam->question_count + 5)
                 ->create([
@@ -43,5 +43,62 @@ class DatabaseSeeder extends Seeder
                     }
                 });
         });
+
+
+        $users = User::take(10)->get();
+
+        $exams = Exam::take(5)->get();
+
+        $studentAbilities = [];
+
+        foreach ($users as $user) {
+            $studentAbilities[$user->id] = fake()->numberBetween(45, 95);
+        }
+
+        foreach ($users as $user) {
+
+            foreach ($exams as $exam) {
+
+                $ability = $studentAbilities[$user->id];
+
+                // Generate the randomized exam
+                $studentExam = $exam->generate($user);
+
+                // Answer every question randomly
+                foreach ($studentExam->questions as $question) {
+
+                    $answers = [
+                        $question->answer_id_1,
+                        $question->answer_id_2,
+                        $question->answer_id_3,
+                        $question->answer_id_4,
+                    ];
+
+                    $correctAnswer = Answer::where('question_id', $question->question_id)
+                        ->where('correct', true)
+                        ->first();
+
+                    $wrongAnswers = Answer::where('question_id', $question->question_id)
+                        ->where('correct', false)
+                        ->pluck('id');
+
+                    $selectedAnswer = fake()->boolean($ability)
+                        ? $correctAnswer->id
+                        : $wrongAnswers->random();
+
+                    $question->update([
+                        'answer_id' => $selectedAnswer,
+                        'answered_at' => fake()->dateTimeBetween(
+                            $studentExam->created_at,
+                            $studentExam->end
+                        ),
+                    ]);
+                }
+
+                // Calculate the final result
+                $studentExam->refresh();
+                $studentExam->finish();
+            }
+        }
     }
 }

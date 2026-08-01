@@ -51,8 +51,6 @@ class StudentExam extends Model
 
             $answer = Answer::find($question->answer_id);
 
-            echo($answer);
-
             if ($answer && $answer->correct) {
                 $correct++;
             }
