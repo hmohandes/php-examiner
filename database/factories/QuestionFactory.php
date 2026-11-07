@@ -11,7 +11,7 @@ class QuestionFactory extends Factory
     {
         return [
             'exam_id' => Exam::factory(),
-            'text' => fake()->sentence() . '?',
+            'text' => trim(fake()->sentence()) . '?',
         ];
     }
 }

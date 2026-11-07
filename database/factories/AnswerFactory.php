@@ -11,7 +11,7 @@ class AnswerFactory extends Factory
     {
         return [
             'question_id' => Question::factory(),
-            'text' => fake()->sentence(4),
+            'text' => trim(fake()->sentence(4)),
             'correct' => false,
         ];
     }

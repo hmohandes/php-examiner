@@ -18,16 +18,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(100)->create();
+        User::factory(300)->create();
 
         // User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
 
-        Exam::factory(25)->create()->each(function (Exam $exam) {
+        Exam::factory(100)->create()->each(function (Exam $exam) {
 
-            Question::factory($exam->question_count + 5)
+            $extra_question_count = fake()->numberBetween(0, 10);
+            Question::factory($exam->question_count + $extra_question_count)
                 ->create([
                     'exam_id' => $exam->id,
                 ])
@@ -45,9 +46,9 @@ class DatabaseSeeder extends Seeder
         });
 
 
-        $users = User::take(100)->get();
+        $users = User::take(300)->get();
 
-        $exams = Exam::take(25)->get();
+        $exams = Exam::take(100)->get();
 
         $studentAbilities = [];
 
