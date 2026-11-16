@@ -48,8 +48,6 @@ class DatabaseSeeder extends Seeder
 
         $users = User::take(300)->get();
 
-        $exams = Exam::take(100)->get();
-
         $studentAbilities = [];
 
         foreach ($users as $user) {
@@ -57,6 +55,8 @@ class DatabaseSeeder extends Seeder
         }
 
         foreach ($users as $user) {
+
+            $exams = Exam::take(20)->get();
 
             foreach ($exams as $exam) {
 
